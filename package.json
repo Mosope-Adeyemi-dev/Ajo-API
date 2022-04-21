@@ -1,0 +1,28 @@
+{
+  "name": "ajo-app-api",
+  "version": "1.0.0",
+  "description": "Ajo acumen interns app API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "Acumen Interns",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.8.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.3.0",
+    "morgan": "^1.10.0"
+  }
+}
