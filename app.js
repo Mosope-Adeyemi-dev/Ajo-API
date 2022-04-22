@@ -12,13 +12,13 @@ app.use(express.urlencoded({ extended: false }));
 
 // routes
 readdirSync("./routes").map((routeName) => {
-	app.use("/api", require(`./routes/${routeName}`));
+  app.use("/api", require(`./routes/${routeName}`));
 });
 
 app.get("/", (req, res) => {
-	res.send({
-		status: "Active",
-	});
+  res.send({
+    status: "Active",
+  });
 });
 
 module.exports = app;
