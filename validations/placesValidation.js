@@ -20,6 +20,18 @@ const createPlaceValidation = async (field) => {
   }
 };
 
+const createTopCitiesValidation = async (field) => {
+  const schema = Joi.object({
+    city: Joi.string().required(),
+  });
+  try {
+    return await schema.validateAsync(field, { abortEarly: false });
+  } catch (err) {
+    return err;
+  }
+};
+
 module.exports = {
   createPlaceValidation,
+  createTopCitiesValidation,
 };
