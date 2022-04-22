@@ -1,40 +1,26 @@
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const morgan = require("morgan");
+const app = require("./app");
+const { exit } = require("process");
+const { connectDB } = require("./config/db");
 
-const app = express();
 const port = process.env.PORT || 4000;
 
-// Middewares
-app.use(morgan("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+let server;
 
-//Database Configuration
-mongoose.connect(
-  process.env.MONGODB_URI,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (e) => {
-    e
-      ? console.log(`Error connecting to database /n ${e}`)
-      : console.log(`Successfully connected to the database`);
-  }
-);
-
-// Server test status
-app.get("/", (req, res) => {
-  res.send({
-    status: "Active",
+// Connect to database and start the server
+connectDB()
+  .then(() => {
+    server = app.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
+    });
+  })
+  .catch(() => {
+    console.log("Database connection failed!");
   });
-});
 
-// Routes
-app.use("/api/v1/places/", require("./routes/placesRoutes"));
+process.on("unhandledRejection", (error) => {
+  console.log("UNHANDLED REJECTION! Shutting down...");
+  console.log(error);
+  console.log(error.name, error.message);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  server.close(() => exit(1));
 });
