@@ -1,21 +1,26 @@
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const morgan = require("morgan");
+const app = require("./app");
+const { exit } = require("process");
+const { connectDB } = require("./config/db");
 
-const app = express();
 const port = process.env.PORT || 4000;
 
-app.use(morgan("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+let server;
 
-app.get("/", (req, res) => {
-  res.send({
-    status: "Active",
-  });
-});
+// Connect to database and start the server
+connectDB()
+	.then(() => {
+		server = app.listen(port, () => {
+			console.log(`Server listening on port ${port}`);
+		});
+	})
+	.catch(() => {
+		console.log("Database connection failed!");
+	});
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+process.on("unhandledRejection", (error) => {
+	console.log("UNHANDLED REJECTION! Shutting down...");
+	console.log(error);
+	console.log(error.name, error.message);
+
+	server.close(() => exit(1));
 });
