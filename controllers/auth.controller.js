@@ -12,6 +12,8 @@ exports.signup = async (req, res) => {
 
 		const username = generateFromEmail(email, 4);
 
+		const hashedPassword = await hashPassword(password);
+
 		const userExists = await User.findOne({
 			$or: [{ email }, { username }],
 		}).exec();
@@ -28,7 +30,23 @@ exports.signup = async (req, res) => {
 			}
 		}
 
-		const hashedPassword = await hashPassword(password);
+		const token = jwt.sign({ email }, process.env.JWT_ACCOUNT_ACTIVATION, {
+			expiresIn: "10m",
+		});
+
+		const msg = {
+			from: process.env.MAIL_USERNAME,
+			to: email,
+			subject: "Verify your Account",
+			html: `
+			<h1>Ajo</h1>
+			<p>Please use the following link to verify your acccount.
+			<br/>The link expires in 10 minutes.</p>
+            <a>${process.env.CLIENT_URL}/auth/verify?token=${token}</a>
+            <hr />
+            <footer>This email may contain sensitive information</footer>
+		`,
+		};
 
 		const user = new User({
 			email,
@@ -44,10 +62,55 @@ exports.signup = async (req, res) => {
 					error: translateError(err),
 				});
 			}
-			return res.json({
-				message: "Signup success! Please signin",
+
+			transporter.sendMail(msg, (err, info) => {
+				if (err) {
+					return res.status(502).json({ error: err });
+				}
+
+				return res.status(200).json({
+					message: `Signup successful! Please verify your email, ${info.accepted[0]}`,
+				});
 			});
 		});
+	} catch (error) {
+		console.log(error);
+		return res
+			.status(500)
+			.json({ error: "Something went wrong! Please try again." });
+	}
+};
+
+// Update database with email verification status.
+exports.emailVerified = (req, res) => {
+	try {
+		const { token } = req.body;
+
+		if (token) {
+			jwt.verify(
+				token,
+				process.env.JWT_ACCOUNT_ACTIVATION,
+				(error, decoded) => {
+					if (error) {
+						return res.status(401).json({
+							error: "Expired link! Please signup again.",
+						});
+					}
+
+					const { email } = decoded;
+
+					User.updateOne(
+						{ email },
+						{ $set: { verified: true } },
+						{ new: true }
+					).exec();
+
+					res.json({ message: "Email verified!" });
+				}
+			);
+		} else {
+			return res.json({ error: "Invalid token. Try again" });
+		}
 	} catch (error) {
 		console.log(error);
 		return res
@@ -192,6 +255,46 @@ exports.resetPassword = async (req, res) => {
 			}
 
 			res.json({ message: "Password changed successfully." });
+		});
+	} catch (error) {
+		console.log(error);
+		return res
+			.status(500)
+			.json({ error: "Something went wrong! Please try again." });
+	}
+};
+
+// Email verification
+exports.verifyEmail = async (req, res) => {
+	try {
+		const { email } = req.body;
+
+		const token = jwt.sign({ email }, process.env.JWT_ACCOUNT_ACTIVATION, {
+			expiresIn: "10m",
+		});
+
+		const msg = {
+			from: process.env.MAIL_USERNAME,
+			to: email,
+			subject: "Verify your Account",
+			html: `
+			<h1>Ajo</h1>
+			<p>Please use the following link to verify your acccount.
+			<br/>The link expires in 10 minutes.</p>
+            <a>${process.env.CLIENT_URL}/auth/verify?token=${token}</a>
+            <hr />
+            <footer>This email may contain sensitive information</footer>
+		`,
+		};
+
+		transporter.sendMail(msg, (err, info) => {
+			if (err) {
+				return res.status(502).json({ error: err });
+			}
+
+			return res.status(200).json({
+				message: `Verification email sent to ${info.accepted[0]}`,
+			});
 		});
 	} catch (error) {
 		console.log(error);

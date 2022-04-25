@@ -1,10 +1,13 @@
 const router = require("express").Router();
 const {
-  createTopCities,
-  getTopCities,
+	createTopCities,
+	getTopCities,
 } = require("../controllers/cityControllers");
 
-router.post("/top-cities/create", createTopCities);
+const { requireSignin } = require("../middlewares/authToken");
+const isVerified = require("../middlewares/isVerified");
+
+router.post("/top-cities/create", requireSignin, isVerified, createTopCities);
 router.get("/top-cities", getTopCities);
 
 module.exports = router;

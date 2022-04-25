@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema(
 		reset_pin_expiry: {
 			type: Date,
 		},
+		verified: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{ timestamps: true }
 );
