@@ -4,6 +4,7 @@ const {
   getPlaceDetailsByPlaceId,
   checkDBForPlace,
   getPopularPlacesByRating,
+  getPlacesByPlaceType,
   getPlacesByCity,
 } = require("../services/placeServices");
 
@@ -97,10 +98,35 @@ const discoverCityPlaces = async (req, res) => {
       false,
       foundPlaces
     );
-  if (foundPlaces.length == 0)
+  if (foundPlaces.length < 1)
     return responseHandler(
       res,
       "No place matches your query",
+      200,
+      false,
+      foundPlaces
+    );
+  return responseHandler(res, "Unable to retrieve places", 400, true, "");
+};
+
+const getSimilarPlaces = async (req, res) => {
+  if (req.query.placeType == undefined) {
+    return responseHandler(res, "Include a valid place type", 400, true, "");
+  }
+  const foundPlaces = await getPlacesByPlaceType(req.query.placeType);
+  if (foundPlaces.length > 0)
+    return responseHandler(
+      res,
+      "Places retrieved succesfully",
+      200,
+      false,
+      foundPlaces
+    );
+
+  if (foundPlaces.length < 1)
+    return responseHandler(
+      res,
+      "No similar places found",
       200,
       false,
       foundPlaces
@@ -113,4 +139,5 @@ module.exports = {
   getPopularPlaces,
   queryPlaces,
   discoverCityPlaces,
+  getSimilarPlaces,
 };

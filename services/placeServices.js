@@ -104,6 +104,12 @@ const getPlacesByCity = async (city, placeType) =>
     .limit(30)
     .select("fullSearchResult");
 
+const getPlacesByPlaceType = async (placeType) =>
+  await Place.find({ placeType })
+    .sort({ rating: -1 })
+    .limit(5)
+    .select("fullSearchResult");
+
 module.exports = {
   getPlaceDetailsByPlaceId,
   getPopularPlacesByRating,
@@ -113,4 +119,5 @@ module.exports = {
   saveCity,
   alltopCities,
   getPlacesByCity,
+  getPlacesByPlaceType,
 };

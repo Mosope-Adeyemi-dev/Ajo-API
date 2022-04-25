@@ -4,12 +4,12 @@ const formidable = require("express-formidable-v2");
 const router = express.Router();
 
 const {
-	userProfile,
-	deleteAccount,
-	updateAccount,
-	changePassword,
-	profiles,
-	deleteAll,
+  userProfile,
+  deleteAccount,
+  updateAccount,
+  changePassword,
+  profiles,
+  deleteAll,
 } = require("../controllers/user.controller");
 
 const { requireSignin } = require("../middlewares/authToken");
