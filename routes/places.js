@@ -4,7 +4,7 @@ const {
   getPopularPlaces,
   queryPlaces,
   discoverCityPlaces,
-} = require("../controllers/placeControllers");
+} = require("../controllers/placeController");
 
 router.get("/places/auto/search", queryPlaces);
 router.get("/places/:placeId", getPlaceDetails);
