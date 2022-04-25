@@ -2,7 +2,7 @@ const router = require("express").Router();
 const {
 	createTopCities,
 	getTopCities,
-} = require("../controllers/cityControllers");
+} = require("../controllers/cityController");
 
 const { requireSignin } = require("../middlewares/authToken");
 const isVerified = require("../middlewares/isVerified");

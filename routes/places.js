@@ -5,7 +5,7 @@ const {
 	queryPlaces,
 	discoverCityPlaces,
 	getSimilarPlaces,
-} = require("../controllers/placeControllers");
+} = require("../controllers/placeController");
 
 const { requireSignin } = require("../middlewares/authToken");
 const isVerified = require("../middlewares/isVerified");
