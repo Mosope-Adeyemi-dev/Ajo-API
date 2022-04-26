@@ -7,18 +7,13 @@ const {
 	getSimilarPlaces,
 } = require("../controllers/placeController");
 
-const { requireSignin } = require("../middlewares/authToken");
-const isVerified = require("../middlewares/isVerified");
+// const { requireSignin } = require("../middlewares/authToken");
+// const isVerified = require("../middlewares/isVerified");
 
-router.get("/places/auto/search", requireSignin, isVerified, queryPlaces);
-router.get("/places/:placeId", requireSignin, isVerified, getPlaceDetails);
+router.get("/places/auto/search", queryPlaces);
+router.get("/places/:placeId", getPlaceDetails);
 router.get("/places/search/popular", getPopularPlaces);
 router.get("/places/discover/:city", discoverCityPlaces);
-router.get(
-	"/places/search/similar",
-	requireSignin,
-	isVerified,
-	getSimilarPlaces
-);
+router.get("/places/search/similar", getSimilarPlaces);
 
 module.exports = router;

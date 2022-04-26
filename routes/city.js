@@ -4,10 +4,10 @@ const {
 	getTopCities,
 } = require("../controllers/cityController");
 
-const { requireSignin } = require("../middlewares/authToken");
-const isVerified = require("../middlewares/isVerified");
+// const { requireSignin } = require("../middlewares/authToken");
+// const isVerified = require("../middlewares/isVerified");
 
-router.post("/top-cities/create", requireSignin, isVerified, createTopCities);
+router.post("/top-cities/create", createTopCities);
 router.get("/top-cities", getTopCities);
 
 module.exports = router;
