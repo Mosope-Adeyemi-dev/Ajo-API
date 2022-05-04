@@ -29,11 +29,11 @@ const getQueryPredictions = async (query) => {
   try {
     const options = {
       method: "GET",
-      url: "https://google-maps28.p.rapidapi.com/maps/api/place/queryautocomplete/json",
-      params: { input: query, language: "en" },
-      headers: {
-        "X-RapidAPI-Host": process.env.RAPID_API_HOST,
-        "X-RapidAPI-Key": process.env.RAPID_API_KEY,
+      url: `${process.env.GOOGLE_PLACES_API_HOST}/maps/api/place/queryautocomplete/json`,
+      params: {
+        input: query,
+        language: "en",
+        key: process.env.GOOGLE_PLACES_API_KEY,
       },
     };
     const result = await axios.request(options);
@@ -48,16 +48,13 @@ const getPlaceDetailsByPlaceId = async (placeId) => {
   try {
     const options = {
       method: "GET",
-      url: "https://google-maps28.p.rapidapi.com/maps/api/place/details/json",
+      url: `${process.env.GOOGLE_PLACES_API_HOST}/maps/api/place/details/json`,
       params: {
         fields:
           "address_component,adr_address,business_status,formatted_address,name,permanently_closed,photo,place_id,type,url,utc_offset,vicinity,formatted_phone_number,international_phone_number,opening_hours,website,price_level,rating,review,user_ratings_total",
         place_id: placeId,
         language: "en",
-      },
-      headers: {
-        "X-RapidAPI-Host": process.env.RAPID_API_HOST,
-        "X-RapidAPI-Key": process.env.RAPID_API_KEY,
+        key: process.env.GOOGLE_PLACES_API_KEY,
       },
     };
     const result = await axios.request(options);
